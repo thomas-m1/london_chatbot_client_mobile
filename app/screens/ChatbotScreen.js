@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import TypingAnimation from "../components/TypingAnimation";
 import { useNavigation } from "@react-navigation/native";
+import { Theme } from "../styling/Theme";
 
 
 const ChatbotScreen = ({ navigation }) => {
-  const { openDrawer } = useNavigation();
 
   const timestamp = new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -150,15 +150,17 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%", // Ensure the header fills the width
-    height: 60, // Adjust the height as needed
-    backgroundColor: "#335FFF",
+    height: 100, // Adjust the height as needed
+    backgroundColor: Theme.colors.primary,
     justifyContent: "center", // Centers the title text vertically
     alignItems: "center",
+    marginTop:0,
   },
   headerText: {
-    color: "#ffffff",
+    color: Theme.colors.primaryText,
     fontSize: 20,
     fontWeight: "bold",
+    marginTop:40,
   },
   message: {
     padding: 10,
@@ -205,6 +207,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     padding: 8,
+    marginBottom: 40,
   },
   input: {
     flex: 1,
