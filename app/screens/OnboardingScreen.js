@@ -70,6 +70,7 @@ const OnboardingScreen = ({navigation}) => {
           justifyContent: 'space-between',
         }}
         onPress={() => navigation.navigate('ChatbotScreen')}>
+        {/* onPress={() => navigation.replace('ChatbotScreen')}> */}
         <Text
           style={{
             color: 'white',
