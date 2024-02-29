@@ -5,18 +5,26 @@ const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require("./assets/background.jpg")} // Your welcome screen image
-        style={StyleSheet.absoluteFill} // This makes the image fill the entire screen
+        source={require("../assets/background.jpg")}
+        style={StyleSheet.absoluteFill}
       />
       <View style={styles.logoContainer}>
         <Image
-          source={require("./assets/logo.png")}
+          source={require("../assets/logo.png")}
           style={{ width: 200, height: 200 }}
           resizeMode="contain"
         />
         <View style={styles.buttonContainer}>
           <Button
-            title="Get Started"
+            title="Log In"
+            onPress={() => navigation.navigate("LogInScreen")}
+          />
+          <Button
+            title="Sign Up"
+            onPress={() => navigation.navigate("SignUpScreen")}
+          />
+          <Button
+            title="Continue without logging in"
             onPress={() => navigation.navigate("ChatbotScreen")}
           />
         </View>

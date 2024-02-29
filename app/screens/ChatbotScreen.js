@@ -9,9 +9,13 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import TypingAnimation from "./TypingAnimation";
+import TypingAnimation from "../components/TypingAnimation";
+import { useNavigation } from "@react-navigation/native";
 
-const ChatbotScreen = () => {
+
+const ChatbotScreen = ({ navigation }) => {
+  const { openDrawer } = useNavigation();
+
   const timestamp = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -71,6 +75,7 @@ const ChatbotScreen = () => {
   };
 
   return (
+
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>London Navigator - ChatBot</Text>
@@ -98,8 +103,8 @@ const ChatbotScreen = () => {
             <Image
               source={
                 message.type === "user"
-                  ? require("./assets/user.png")
-                  : require("./assets/robot.png")
+                  ? require("../assets/user.png")
+                  : require("../assets/robot.png")
               }
               style={styles.icon}
             />
@@ -118,13 +123,13 @@ const ChatbotScreen = () => {
         ))}
         {isBotThinking && (
           <View style={styles.messageRow}>
-            <Image source={require("./assets/robot.png")} style={styles.icon} />
+            <Image source={require("../assets/robot.png")} style={styles.icon} />
             <TypingAnimation />
           </View>
         )}
       </ScrollView>
       <View style={styles.inputContainer}>
-        <Image source={require("./assets/user.png")} style={styles.icon} />
+        <Image source={require("../assets/user.png")} style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Type a message..."
