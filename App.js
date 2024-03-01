@@ -1,16 +1,15 @@
 import React from "react";
 
-import {NavigationContainer} from '@react-navigation/native';
+import { NavigationContainer } from "@react-navigation/native";
 
-import AuthStack from './app/navigation/AuthStackNavigator';
-import DrawerNavigator from './app/navigation/DrawerNavigator';
+import AuthStack from "./app/navigation/AuthStackNavigator";
+import DrawerNavigator from "./app/navigation/DrawerNavigator";
 
 function App() {
   return (
     <NavigationContainer>
-      <AuthStack />
-      {/* <DrawerNavigator /> */}
-
+      {/* <AuthStack /> */}
+      {<DrawerNavigator />}
     </NavigationContainer>
   );
 }

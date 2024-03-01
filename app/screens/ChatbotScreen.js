@@ -58,6 +58,7 @@ const ChatbotScreen = () => {
       const responseData = await response.json();
       const botMessage = {
         text: responseData.reply,
+        sourceDocs: responseData.source_docs,
         type: "bot",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -88,7 +89,11 @@ const ChatbotScreen = () => {
             imageStyle={{ borderRadius: 25 }}
           />
         </TouchableOpacity> */}
-        <Button title="Drawer" onPress={() => navigation.openDrawer()} style={styles.drawerButton} />
+        <Button
+          title="Drawer"
+          onPress={() => navigation.openDrawer()}
+          style={styles.drawerButton}
+        />
 
         <View style={styles.textContainer}>
           <Text style={styles.headerText}>London Navigator</Text>
@@ -131,6 +136,12 @@ const ChatbotScreen = () => {
               ]}
             >
               <Text>{message.text}</Text>
+              {message.sourceDocs &&
+                message.sourceDocs.map((doc, docIndex) => (
+                  <Text key={docIndex}>
+                    Doc #{docIndex + 1}: {doc.content} ({doc.doc})
+                  </Text>
+                ))}
               <Text style={styles.timestampStyle}>{message.timestamp}</Text>
             </View>
           </View>
@@ -145,7 +156,11 @@ const ChatbotScreen = () => {
           </View>
         )}
       </ScrollView>
-      <Button title="Drawer" onPress={() => navigation.openDrawer()} style={styles.drawerButton} />
+      <Button
+        title="Drawer"
+        onPress={() => navigation.openDrawer()}
+        style={styles.drawerButton}
+      />
 
       <View style={styles.inputContainer}>
         <Image source={require("../assets/user.png")} style={styles.icon} />
@@ -179,19 +194,19 @@ const styles = StyleSheet.create({
     color: Theme.colors.primaryText,
     fontSize: 20,
     fontWeight: "bold",
-    marginTop:30,
+    marginTop: 30,
   },
   iconContainer: {
     marginLeft: 10, // Adjust as needed
-    marginTop:30,
+    marginTop: 30,
   },
   drawerButton: {
     marginLeft: 10, // Adjust as needed
-    marginTop:80,
+    marginTop: 80,
   },
   textContainer: {
     flex: 1, // Take up remaining space
-    alignItems: 'center', // Center horizontally
+    alignItems: "center", // Center horizontally
     marginLeft: -65, // Compensate for the space taken by the icon
   },
   message: {
