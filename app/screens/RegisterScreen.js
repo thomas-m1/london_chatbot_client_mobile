@@ -4,6 +4,7 @@ import {
   ScrollView,
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
@@ -19,6 +20,7 @@ import RegistrationSVG from '../assets/images/misc/registration.svg';
 import GoogleSVG from '../assets/images/misc/google.svg';
 import FacebookSVG from '../assets/images/misc/facebook.svg';
 import TwitterSVG from '../assets/images/misc/twitter.svg';
+import TwitterPNG from '../assets/images/misc/twitter.png';
 import CustomButton from '../components/CustomButton';
 import { Theme } from '../styling/Theme';
 

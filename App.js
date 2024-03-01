@@ -8,8 +8,8 @@ import DrawerNavigator from './app/navigation/DrawerNavigator';
 function App() {
   return (
     <NavigationContainer>
-      {/* <AuthStack /> */}
-      <DrawerNavigator />
+      <AuthStack />
+      {/* <DrawerNavigator /> */}
 
     </NavigationContainer>
   );
