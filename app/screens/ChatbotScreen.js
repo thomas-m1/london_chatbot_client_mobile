@@ -7,11 +7,16 @@ import {
   ScrollView,
   StyleSheet,
   Image,
+  ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import TypingAnimation from "./TypingAnimation";
+import TypingAnimation from "../components/TypingAnimation";
+import { useNavigation } from "@react-navigation/native";
+import { Theme } from "../styling/Theme";
 
 const ChatbotScreen = () => {
+  const navigation = useNavigation();
+
   const timestamp = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
@@ -53,6 +58,7 @@ const ChatbotScreen = () => {
       const responseData = await response.json();
       const botMessage = {
         text: responseData.reply,
+        sourceDocs: responseData.source_docs,
         type: "bot",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -73,7 +79,25 @@ const ChatbotScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>London Navigator - ChatBot</Text>
+        {/* <TouchableOpacity
+          onPress={() => navigation.openDrawer()}
+          style={styles.iconContainer}
+        >
+          <ImageBackground
+            source={require("../assets/images/user-profile.jpg")}
+            style={{ width: 35, height: 35 }}
+            imageStyle={{ borderRadius: 25 }}
+          />
+        </TouchableOpacity> */}
+        <Button
+          title="Drawer"
+          onPress={() => navigation.openDrawer()}
+          style={styles.drawerButton}
+        />
+
+        <View style={styles.textContainer}>
+          <Text style={styles.headerText}>London Navigator</Text>
+        </View>
       </View>
 
       <ScrollView>
@@ -98,8 +122,8 @@ const ChatbotScreen = () => {
             <Image
               source={
                 message.type === "user"
-                  ? require("./assets/user.png")
-                  : require("./assets/robot.png")
+                  ? require("../assets/user.png")
+                  : require("../assets/robot.png")
               }
               style={styles.icon}
             />
@@ -112,19 +136,34 @@ const ChatbotScreen = () => {
               ]}
             >
               <Text>{message.text}</Text>
+              {message.sourceDocs &&
+                message.sourceDocs.map((doc, docIndex) => (
+                  <Text key={docIndex}>
+                    Doc #{docIndex + 1}: {doc.content} ({doc.doc})
+                  </Text>
+                ))}
               <Text style={styles.timestampStyle}>{message.timestamp}</Text>
             </View>
           </View>
         ))}
         {isBotThinking && (
           <View style={styles.messageRow}>
-            <Image source={require("./assets/robot.png")} style={styles.icon} />
+            <Image
+              source={require("../assets/robot.png")}
+              style={styles.icon}
+            />
             <TypingAnimation />
           </View>
         )}
       </ScrollView>
+      <Button
+        title="Drawer"
+        onPress={() => navigation.openDrawer()}
+        style={styles.drawerButton}
+      />
+
       <View style={styles.inputContainer}>
-        <Image source={require("./assets/user.png")} style={styles.icon} />
+        <Image source={require("../assets/user.png")} style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Type a message..."
@@ -144,16 +183,31 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   header: {
-    width: "100%", // Ensure the header fills the width
-    height: 60, // Adjust the height as needed
-    backgroundColor: "#335FFF",
-    justifyContent: "center", // Centers the title text vertically
-    alignItems: "center",
+    flexDirection: "row", // Align items horizontally
+    alignItems: "center", // Center vertically
+    justifyContent: "space-between", // Distribute space between items
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    backgroundColor: Theme.colors.primary,
   },
   headerText: {
-    color: "#ffffff",
+    color: Theme.colors.primaryText,
     fontSize: 20,
     fontWeight: "bold",
+    marginTop: 30,
+  },
+  iconContainer: {
+    marginLeft: 10, // Adjust as needed
+    marginTop: 30,
+  },
+  drawerButton: {
+    marginLeft: 10, // Adjust as needed
+    marginTop: 80,
+  },
+  textContainer: {
+    flex: 1, // Take up remaining space
+    alignItems: "center", // Center horizontally
+    marginLeft: -65, // Compensate for the space taken by the icon
   },
   message: {
     padding: 10,
@@ -197,9 +251,11 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 5,
   },
+
   inputContainer: {
     flexDirection: "row",
     padding: 8,
+    marginBottom: 40,
   },
   input: {
     flex: 1,

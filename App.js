@@ -1,28 +1,17 @@
 import React from "react";
+
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import WelcomeScreen from "./app/WelcomeScreen";
-import ChatbotScreen from "./app/ChatbotScreen";
 
-const Stack = createStackNavigator();
+import AuthStack from "./app/navigation/AuthStackNavigator";
+import DrawerNavigator from "./app/navigation/DrawerNavigator";
 
-const App = () => {
+function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
-        <Stack.Screen
-          name="WelcomeScreen"
-          component={WelcomeScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="ChatbotScreen"
-          component={ChatbotScreen}
-          options={{ title: "My Navigator", headerTitleAlign: "center" }}
-        />
-      </Stack.Navigator>
+      {/* <AuthStack /> */}
+      {<DrawerNavigator />}
     </NavigationContainer>
   );
-};
+}
 
 export default App;
