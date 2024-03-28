@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -42,7 +42,7 @@ const ChatbotScreen = () => {
 
   const handleSendMessage = async (userInput) => {
     const userMessage = { text: userInput, type: "user", timestamp };
-    console.log("message:", userMessage["text"]);
+    console.log("User query:", userMessage["text"]);
     setMessages([...messages, userMessage]);
 
     setIsBotThinking(true);
@@ -52,13 +52,15 @@ const ChatbotScreen = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: userInput }),
       });
+
+      setInput("");
 
       const responseData = await response.json();
       const botMessage = {
         text: responseData.reply,
-        sourceDocs: responseData.source_docs,
+        // sourceDocs: responseData.source_docs,
         type: "bot",
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -72,108 +74,112 @@ const ChatbotScreen = () => {
       setIsBotThinking(false);
       console.error("Error sending message:", error);
     }
-
-    setInput("");
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        {/* <TouchableOpacity
-          onPress={() => navigation.openDrawer()}
-          style={styles.iconContainer}
-        >
-          <ImageBackground
-            source={require("../assets/images/user-profile.jpg")}
-            style={{ width: 35, height: 35 }}
-            imageStyle={{ borderRadius: 25 }}
-          />
-        </TouchableOpacity> */}
-        <Button
-          title="Drawer"
-          onPress={() => navigation.openDrawer()}
-          style={styles.drawerButton}
-        />
+    <ImageBackground
+      source={require("../assets/images/chat-bg2.jpg")} // Use the same background image
+      style={styles.container}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={styles.iconContainer}
+          >
+            <ImageBackground
+              source={require("../assets/images/user-profile.jpg")}
+              style={{ width: 40, height: 40 }}
+              imageStyle={{ borderRadius: 25 }}
+            />
+          </TouchableOpacity>
 
-        <View style={styles.textContainer}>
-          <Text style={styles.headerText}>London Navigator</Text>
-        </View>
-      </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.headerText}>London Navigator</Text>
+          </View>
 
-      <ScrollView>
-        <View style={styles.suggestionsContainer}>
-          <Text style={styles.suggestionsTitle}>
-            A few suggestions to get you started:
-          </Text>
-          <View>
-            {suggestions.map((suggestion, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.suggestionButton}
-                onPress={() => handleSendMessage(suggestion)}
-              >
-                <Text style={styles.suggestionText}>{suggestion}</Text>
-              </TouchableOpacity>
-            ))}
+          <View style={styles.iconContainer}>
+            <Image
+              source={require("../assets/logo.png")} // Update with the correct path to your logo image
+              style={styles.logo}
+            />
           </View>
         </View>
-        {messages.map((message, index) => (
-          <View key={index} style={styles.messageRow}>
-            <Image
-              source={
-                message.type === "user"
-                  ? require("../assets/user.png")
-                  : require("../assets/robot.png")
-              }
-              style={styles.icon}
-            />
-            <View
-              style={[
-                styles.message,
-                message.type === "user"
-                  ? styles.userMessage
-                  : styles.botMessage,
-              ]}
-            >
-              <Text>{message.text}</Text>
-              {message.sourceDocs &&
+
+        <ScrollView>
+          <View style={styles.suggestionsContainer}>
+            <Text style={styles.suggestionsTitle}>
+              A few suggestions to get you started:
+            </Text>
+            <View>
+              {suggestions.map((suggestion, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.suggestionButton}
+                  onPress={() => handleSendMessage(suggestion)}
+                >
+                  <Text style={styles.suggestionText}>{suggestion}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+          {messages.map((message, index) => (
+            <View key={index} style={styles.messageRow}>
+              <Image
+                source={
+                  message.type === "user"
+                    ? require("../assets/images/user-profile.jpg")
+                    : require("../assets/robot.png")
+                }
+                style={styles.icon}
+              />
+              <View
+                style={[
+                  styles.message,
+                  message.type === "user"
+                    ? styles.userMessage
+                    : styles.botMessage,
+                ]}
+              >
+                <Text>{message.text}</Text>
+                {/* {message.sourceDocs &&
                 message.sourceDocs.map((doc, docIndex) => (
                   <Text key={docIndex}>
                     Doc #{docIndex + 1}: {doc.content} ({doc.doc})
                   </Text>
-                ))}
-              <Text style={styles.timestampStyle}>{message.timestamp}</Text>
+                ))} */}
+                <Text style={styles.timestampStyle}>{message.timestamp}</Text>
+              </View>
             </View>
-          </View>
-        ))}
-        {isBotThinking && (
-          <View style={styles.messageRow}>
-            <Image
-              source={require("../assets/robot.png")}
-              style={styles.icon}
-            />
-            <TypingAnimation />
-          </View>
-        )}
-      </ScrollView>
-      <Button
-        title="Drawer"
-        onPress={() => navigation.openDrawer()}
-        style={styles.drawerButton}
-      />
+          ))}
+          {isBotThinking && (
+            <View style={styles.messageRow}>
+              <Image
+                source={require("../assets/robot.png")}
+                style={styles.icon}
+              />
+              <TypingAnimation />
+            </View>
+          )}
+        </ScrollView>
 
-      <View style={styles.inputContainer}>
-        <Image source={require("../assets/user.png")} style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Type a message..."
-          value={input}
-          onChangeText={handleInputChange}
-          maxLength={150}
-        />
-        <Button title="Send" onPress={() => handleSendMessage(input)} />
+        <View style={styles.inputContainer}>
+          <Image
+            source={require("../assets/images/user-profile.jpg")}
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Message London Navigator..."
+            value={input}
+            onChangeText={handleInputChange}
+            maxLength={150}
+          />
+          <Button title="Send" onPress={() => handleSendMessage(input)} />
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -200,14 +206,11 @@ const styles = StyleSheet.create({
     marginLeft: 10, // Adjust as needed
     marginTop: 30,
   },
-  drawerButton: {
-    marginLeft: 10, // Adjust as needed
-    marginTop: 80,
-  },
   textContainer: {
     flex: 1, // Take up remaining space
     alignItems: "center", // Center horizontally
-    marginLeft: -65, // Compensate for the space taken by the icon
+    justifyContent: "center",
+    // marginLeft: -65, // Compensate for the space taken by the icon
   },
   message: {
     padding: 10,
@@ -250,23 +253,34 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginRight: 5,
+    borderRadius: 25,
   },
 
   inputContainer: {
     flexDirection: "row",
     padding: 8,
-    marginBottom: 40,
+    marginBottom: 20,
+    // backgroundColor: Theme.colors.primary,
   },
   input: {
     flex: 1,
-    borderColor: "gray",
+    borderColor: "white",
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
     marginRight: 8,
     borderRadius: 5,
     paddingHorizontal: 10,
+    // color: "#E810D3",
   },
   suggestionsContainer: {
     padding: 10,
+  },
+  logo: {
+    width: 40, // Set the width of your logo
+    height: 40, // Set the height of your logo
+    borderRadius: 25, // Half of the width or height to make it rounded
+    resizeMode: "cover", // Use 'cover' to ensure the logo covers the rounded area
+    overflow: "hidden", // Ensures the image does not bleed outside the borderRadius
   },
   suggestionButton: {
     backgroundColor: "#e0e0e0",
@@ -281,6 +295,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10, // Adjust as needed
     marginBottom: 5, // Space before the suggestions start
+    color: "#FFF",
   },
 });
 

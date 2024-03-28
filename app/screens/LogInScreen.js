@@ -49,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
             <MaterialIcons
               name="alternate-email"
               size={20}
-              color= {Theme.colors.fadedText}
+              color={Theme.colors.fadedText}
               style={{ marginRight: 5 }}
             />
           }
@@ -73,7 +73,13 @@ const LoginScreen = ({ navigation }) => {
 
         <CustomButton label={"Login"} onPress={() => {}} />
 
-        <Text style={{ textAlign: "center", color: Theme.colors.fadedText, marginBottom: 30 }}>
+        <Text
+          style={{
+            textAlign: "center",
+            color: Theme.colors.fadedText,
+            marginBottom: 30,
+          }}
+        >
           Or, login with ...
         </Text>
 

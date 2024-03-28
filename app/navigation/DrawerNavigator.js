@@ -1,36 +1,38 @@
-import React from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import CustomDrawer from '../components/CustomDrawer';
+import CustomDrawer from "../components/CustomDrawer";
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-import ChatbotScreen from '../screens/ChatbotScreen';
-import FAQScreen from '../screens/FAQScreen';
-import { Theme } from '../styling/Theme';
+import ChatbotScreen from "../screens/ChatbotScreen";
+import FAQScreen from "../screens/FAQScreen";
+import GetStartedScreen from "../screens/GetStartedScreen";
+import { Theme } from "../styling/Theme";
 
 const Drawer = createDrawerNavigator();
 
-const AuthStack = () => {
+const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
-      drawerContent={props => <CustomDrawer {...props} />}
+      drawerContent={(props) => <CustomDrawer {...props} />}
       screenOptions={{
         headerShown: false,
         drawerActiveBackgroundColor: Theme.colors.primary,
-        drawerActiveTintColor: '#fff',
-        drawerInactiveTintColor: '#333',
+        drawerActiveTintColor: "#fff",
+        drawerInactiveTintColor: "#333",
         drawerLabelStyle: {
           marginLeft: -25,
-          fontFamily: 'Roboto-Medium',
+          fontFamily: "Roboto-Medium",
           fontSize: 15,
         },
-      }}>
+      }}
+    >
       <Drawer.Screen
-        name="ChatbotScreen"
-        component={ChatbotScreen}
+        name="Get Started"
+        component={GetStartedScreen}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="chatbox-ellipses-outline" size={22} color={color} />
           ),
         }}
@@ -39,7 +41,7 @@ const AuthStack = () => {
         name="New Topic +"
         component={ChatbotScreen}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="chatbox-ellipses-outline" size={22} color={color} />
           ),
         }}
@@ -48,7 +50,7 @@ const AuthStack = () => {
         name="FAQ"
         component={FAQScreen}
         options={{
-          drawerIcon: ({color}) => (
+          drawerIcon: ({ color }) => (
             <Ionicons name="chatbox-ellipses-outline" size={22} color={color} />
           ),
         }}
@@ -57,4 +59,4 @@ const AuthStack = () => {
   );
 };
 
-export default AuthStack;
+export default DrawerNavigator;
