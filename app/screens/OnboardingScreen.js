@@ -18,7 +18,7 @@ const OnboardingScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../assets/background.jpg")} // Update this path
+      source={require("../assets/images/chat-bg3.jpg")} // Update this path
       style={{ flex: 1 }}
       resizeMode="cover" // Cover the entire screen
     >
@@ -74,7 +74,7 @@ const OnboardingScreen = ({ navigation }) => {
               fontFamily: "Roboto-MediumItalic",
             }}
           >
-            Let's Begin
+            Sign In or Register
           </Text>
           <MaterialIcons
             name="arrow-forward-ios"

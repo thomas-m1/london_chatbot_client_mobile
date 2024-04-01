@@ -16,7 +16,7 @@ const GetStartedScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../assets/images/chat-bg2.jpg")} // Update with your actual background image path
+      source={require("../assets/images/chat-bg3.jpg")} // Update with your actual background image path
       style={styles.background}
       resizeMode="cover"
     >
@@ -92,27 +92,27 @@ const styles = StyleSheet.create({
   image: {
     width: "50%",
     height: 200,
-    marginBottom: 0,
+    marginBottom: 50,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#FFFFFF",
     textAlign: "center",
-    marginBottom: 10,
+    marginBottom: 30,
   },
   description: {
     fontSize: 16,
     color: "#FFFFFF",
     textAlign: "center",
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 40,
   },
   button2: {
     backgroundColor: "#2196F3", // Blue
     padding: 15,
     borderRadius: 50,
-    marginBottom: 10,
+    marginBottom: 40,
   },
   buttonText: {
     color: "white",

@@ -30,7 +30,7 @@ const ChatbotScreen = () => {
   const [isBotThinking, setIsBotThinking] = useState(false);
 
   const suggestions = [
-    "What the events happening in London this weekend?",
+    "What are the events happening this weekend?",
     "Plan a two-day trip to London for me.",
     "I have a medical emergency, what should I do?",
     "Where can I find a good barber shop?",
@@ -40,22 +40,27 @@ const ChatbotScreen = () => {
     setInput(value);
   };
 
+  const extractImageUrl = (messageText) => {
+    const urlRegex = /\((https?:\/\/[^)]+)\)/; // Regular expression to match URL in parentheses
+    const match = messageText.match(urlRegex);
+    return match ? match[1] : null; // Return the URL if found
+  };
+
   const handleSendMessage = async (userInput) => {
     const userMessage = { text: userInput, type: "user", timestamp };
     console.log("User query:", userMessage["text"]);
     setMessages([...messages, userMessage]);
+    setInput("");
 
     setIsBotThinking(true);
     try {
-      const response = await fetch("http://10.0.2.2:5000/chatbot", {
+      const response = await fetch("http://172.30.92.218:8081/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: userInput }),
       });
-
-      setInput("");
 
       const responseData = await response.json();
       const botMessage = {
@@ -78,7 +83,7 @@ const ChatbotScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../assets/images/chat-bg2.jpg")} // Use the same background image
+      source={require("../assets/images/chat-bg3.jpg")} // Use the same background image
       style={styles.container}
       resizeMode="cover"
     >
@@ -142,7 +147,29 @@ const ChatbotScreen = () => {
                     : styles.botMessage,
                 ]}
               >
-                <Text>{message.text}</Text>
+                {(() => {
+                  const imageUrl = extractImageUrl(message.text);
+                  if (imageUrl) {
+                    // If an image URL is found, render the image
+                    return (
+                      <>
+                        <Image
+                          source={{ uri: imageUrl }}
+                          style={{ width: 200, height: 200 }} // Adjust size as needed
+                          resizeMode="contain"
+                        />
+                        {/* Optionally, display the rest of the message text without the URL */}
+                        <Text>
+                          {message.text.replace(/\(https?:\/\/[^)]+\)/, "")}
+                        </Text>
+                      </>
+                    );
+                  } else {
+                    // If no URL is found, just render the text
+                    return <Text>{message.text}</Text>;
+                  }
+                })()}
+                {/* <Text>{message.text}</Text> */}
                 {/* {message.sourceDocs &&
                 message.sourceDocs.map((doc, docIndex) => (
                   <Text key={docIndex}>
@@ -176,7 +203,11 @@ const ChatbotScreen = () => {
             onChangeText={handleInputChange}
             maxLength={150}
           />
-          <Button title="Send" onPress={() => handleSendMessage(input)} />
+          <Button
+            title="Send"
+            style={styles.sendButton}
+            onPress={() => handleSendMessage(input)}
+          />
         </View>
       </View>
     </ImageBackground>
@@ -218,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   botMessage: {
-    backgroundColor: "#e0e0e0", // Light grey for bot messages
+    backgroundColor: "#5cafea", // Light grey for bot messages
     padding: 10,
     borderRadius: 20, // Rounded corners for the bubble
     marginVertical: 4,
@@ -283,10 +314,10 @@ const styles = StyleSheet.create({
     overflow: "hidden", // Ensures the image does not bleed outside the borderRadius
   },
   suggestionButton: {
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "#5cafea",
     padding: 10,
     marginHorizontal: 5,
-    borderRadius: 20,
+    borderRadius: 15,
   },
   suggestionText: {
     color: "#000",
@@ -295,7 +326,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 10, // Adjust as needed
     marginBottom: 5, // Space before the suggestions start
-    color: "#FFF",
+    color: "#000",
+  },
+  sendButton: {
+    backgroundColor: "#2196F3", // Blue
+    padding: 15,
+    borderRadius: 50,
+    marginBottom: 10,
   },
 });
 
