@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Alert,
 } from "react-native";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -23,43 +24,37 @@ const LoginScreen = ({ navigation }) => {
   const [loginStatusMessage, setLoginStatusMessage] = useState("");
   const { signIn } = useAuth();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Place the fetch call here
-    fetch("http://172.30.92.218:8081/login", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === "Login successful") {
-          setLoginStatusMessage("Login successful!");
-          setTimeout(() => {
-            navigation.navigate("Home"); // Replace 'Home' with the actual route name you want to navigate to
-          }, 1500);
-
-          signIn(); // Your AuthContext signIn function can be modified to accept parameters if needed
-        } else {
-          // Handle login failure
-          // Show an error message to the user
-          setLoginStatusMessage("Login Unsuccessful!");
-          console.log(
-            "Login failed. Please check your credentials and try again."
-          );
-        }
-      })
-      .catch((error) => {
-        console.error(error); // Log the error or set an error message state to display
-        setLoginStatusMessage("An error occurred. Please try again later.");
-        // Handle network error
-        // Show an error message to the user
+    try {
+      const response = await fetch("http://10.0.2.2:5000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
+      const responseData = await response.json();
+      if (responseData.message === "Login successful") {
+        setLoginStatusMessage("Login successful!");
+        signIn();
+        console.log("Login confirmed. User signed in.");
+      } else {
+        Alert.alert(
+          "Login Unsuccessful!",
+          "Please check your credentials and try again."
+        );
+        console.log(
+          "Login failed. Please check your credentials and try again."
+        );
+      }
+    } catch (error) {
+      console.error(error); // Log the error or set an error message state to display
+      setLoginStatusMessage("An error occurred. Please try again later.");
+    }
   };
   return (
     <ImageBackground
@@ -73,7 +68,7 @@ const LoginScreen = ({ navigation }) => {
             style={{
               fontFamily: "Roboto-Medium",
               fontSize: 28,
-              fontWeight: "500",
+              fontWeight: "bold",
               color: Theme.colors.SecondaryText,
               marginBottom: 30,
             }}
@@ -92,7 +87,7 @@ const LoginScreen = ({ navigation }) => {
               />
             }
             value={email} // Set the value of input to the email state
-            onChangeText={setEmail} //
+            onChangeText={(text) => setEmail(text)} //
             keyboardType="email-address"
           />
 
@@ -108,13 +103,13 @@ const LoginScreen = ({ navigation }) => {
             }
             inputType="password"
             value={password} // Set the value of input to the password state
-            onChangeText={setPassword} // Update the state when text changes
+            onChangeText={(text) => setPassword(text)} // Update the state when text changes
             // fieldButtonLabel={"Forgot?"}
             // fieldButtonFunction={() => {}}
           />
 
           <CustomButton label={"Login"} onPress={handleLogin} />
-          <Text style={{ color: "green" }}>{loginStatusMessage}</Text>
+          <Text style={{ color: "black" }}>{loginStatusMessage}</Text>
           <View
             style={{
               flexDirection: "row",

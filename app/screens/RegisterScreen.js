@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -7,201 +7,175 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
+  Alert,
+  ImageBackground,
+} from "react-native";
 
-import DatePicker from 'react-native-date-picker';
+import InputField from "../components/InputField";
 
-import InputField from '../components/InputField';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import CustomButton from "../components/CustomButton";
+import { Theme } from "../styling/Theme";
 
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+const RegisterScreen = ({ navigation }) => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-import RegistrationSVG from '../assets/images/misc/registration.svg';
-import GoogleSVG from '../assets/images/misc/google.svg';
-import FacebookSVG from '../assets/images/misc/facebook.svg';
-import TwitterSVG from '../assets/images/misc/twitter.svg';
-import TwitterPNG from '../assets/images/misc/twitter.png';
-import CustomButton from '../components/CustomButton';
-import { Theme } from '../styling/Theme';
+  // Handler for registering the user
+  const handleRegister = async () => {
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim()
+    ) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
 
-const RegisterScreen = ({navigation}) => {
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const [dobLabel, setDobLabel] = useState('Date of Birth');
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+    try {
+      // Assuming your Flask server endpoint for registration is '/register'
+      const response = await fetch("http://10.0.2.2:5000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        // Handle success, perhaps navigate to a login screen or home screen
+        Alert.alert("Success", "Registration successful");
+        navigation.goBack(); // Adjust according to your navigation setup
+      } else {
+        // Handle server errors or data issues
+        Alert.alert("Registration Failed", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "An error occurred during registration");
+    }
+  };
 
   return (
-    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{paddingHorizontal: 25}}>
-        {/* <View style={{alignItems: 'center'}}>
-          <RegistrationSVG
-            height={300}
-            width={300}
-            style={{transform: [{rotate: '-5deg'}]}}
+    <ImageBackground
+      source={require("../assets/images/chat-bg3.jpg")} // Use the background image used in other screens
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
+        <View style={{ paddingHorizontal: 25 }}>
+          <Text
+            style={{
+              fontFamily: "Roboto-Medium",
+              fontSize: 30,
+              fontWeight: "bold",
+              color: Theme.colors.SecondaryText,
+              marginBottom: 30,
+            }}
+          >
+            Register
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 15,
+              textAlign: "center",
+              color: "#666",
+              marginBottom: 30,
+            }}
+          >
+            Fill in detais to register...
+          </Text>
+
+          <InputField
+            label={"Full Name"}
+            icon={
+              <Ionicons
+                name="person-outline"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            onChangeText={(text) => setFullName(text)}
           />
-        </View> */}
 
-        <Text
-          style={{
-            fontFamily: 'Roboto-Medium',
-            fontSize: 28,
-            fontWeight: '500',
-            color: Theme.colors.SecondaryText,
-            marginBottom: 30,
-          }}>
-          Register
-        </Text>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginBottom: 30,
-          }}>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              borderColor: Theme.colors.buttonOutline,
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-            }}>
-            {/* <GoogleSVG height={24} width={24} /> */}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              borderColor: '#ddd',
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-            }}>
-            {/* <FacebookSVG height={24} width={24} /> */}
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {}}
-            style={{
-              borderColor: '#ddd',
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingHorizontal: 30,
-              paddingVertical: 10,
-            }}>
-            {/* <TwitterSVG height={24} width={24} /> */}
-          </TouchableOpacity>
-        </View>
-
-        <Text style={{textAlign: 'center', color: '#666', marginBottom: 30}}>
-          Or, register with email ...
-        </Text>
-
-        <InputField
-          label={'Full Name'}
-          icon={
-            <Ionicons
-              name="person-outline"
-              size={20}
-              color="#666"
-              style={{marginRight: 5}}
-            />
-          }
-        />
-
-        <InputField
-          label={'Email ID'}
-          icon={
-            <MaterialIcons
-              name="alternate-email"
-              size={20}
-              color="#666"
-              style={{marginRight: 5}}
-            />
-          }
-          keyboardType="email-address"
-        />
-
-        <InputField
-          label={'Password'}
-          icon={
-            <Ionicons
-              name="ios-lock-closed-outline"
-              size={20}
-              color="#666"
-              style={{marginRight: 5}}
-            />
-          }
-          inputType="password"
-        />
-
-        <InputField
-          label={'Confirm Password'}
-          icon={
-            <Ionicons
-              name="ios-lock-closed-outline"
-              size={20}
-              color="#666"
-              style={{marginRight: 5}}
-            />
-          }
-          inputType="password"
-        />
-
-        <View
-          style={{
-            flexDirection: 'row',
-            borderBottomColor: '#ccc',
-            borderBottomWidth: 1,
-            paddingBottom: 8,
-            marginBottom: 30,
-          }}>
-          <Ionicons
-            name="calendar-outline"
-            size={20}
-            color="#666"
-            style={{marginRight: 5}}
+          <InputField
+            label={"Email ID"}
+            icon={
+              <MaterialIcons
+                name="alternate-email"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            onChangeText={(text) => setEmail(text)}
+            keyboardType="email-address"
           />
-          <TouchableOpacity onPress={() => setOpen(true)}>
-            <Text style={{color: '#666', marginLeft: 5, marginTop: 5}}>
-              {dobLabel}
-            </Text>
-          </TouchableOpacity>
+
+          <InputField
+            label={"Password"}
+            icon={
+              <Ionicons
+                name="ios-lock-closed-outline"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            onChangeText={(text) => setPassword(text)}
+            inputType="password"
+          />
+
+          <InputField
+            label={"Confirm Password"}
+            icon={
+              <Ionicons
+                name="ios-lock-closed-outline"
+                size={20}
+                color="#666"
+                style={{ marginRight: 5 }}
+              />
+            }
+            onChangeText={(text) => setConfirmPassword(text)}
+            inputType="password"
+          />
+
+          <CustomButton label={"Register"} onPress={handleRegister} />
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginBottom: 30,
+            }}
+          >
+            <Text>Already registered?</Text>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={{ color: Theme.colors.primary, fontWeight: "700" }}>
+                {" "}
+                Login
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <DatePicker
-          modal
-          open={open}
-          date={date}
-          mode={'date'}
-          maximumDate={new Date('2005-01-01')}
-          minimumDate={new Date('1980-01-01')}
-          onConfirm={date => {
-            setOpen(false);
-            setDate(date);
-            setDobLabel(date.toDateString());
-          }}
-          onCancel={() => {
-            setOpen(false);
-          }}
-        />
-
-        <CustomButton label={'Register'} onPress={() => {}} />
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginBottom: 30,
-          }}>
-          <Text>Already registered?</Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={{color: Theme.colors.primary, fontWeight: '700'}}> Login</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 

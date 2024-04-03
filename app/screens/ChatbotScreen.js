@@ -40,11 +40,11 @@ const ChatbotScreen = () => {
     setInput(value);
   };
 
-  const extractImageUrl = (messageText) => {
-    const urlRegex = /\((https?:\/\/[^)]+)\)/; // Regular expression to match URL in parentheses
-    const match = messageText.match(urlRegex);
-    return match ? match[1] : null; // Return the URL if found
-  };
+  // const extractImageUrl = (messageText) => {
+  //   const urlRegex = /\((https?:\/\/[^)]+)\)/; // Regular expression to match URL in parentheses
+  //   const match = messageText.match(urlRegex);
+  //   return match ? match[1] : null; // Return the URL if found
+  // };
 
   const handleSendMessage = async (userInput) => {
     const userMessage = { text: userInput, type: "user", timestamp };
@@ -54,7 +54,7 @@ const ChatbotScreen = () => {
 
     setIsBotThinking(true);
     try {
-      const response = await fetch("http://172.30.92.218:8081/chatbot", {
+      const response = await fetch("http://10.0.2.2:5000/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -63,18 +63,42 @@ const ChatbotScreen = () => {
       });
 
       const responseData = await response.json();
-      const botMessage = {
-        text: responseData.reply,
-        // sourceDocs: responseData.source_docs,
-        type: "bot",
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        }),
-      };
+      console.log("Bot message data:", responseData);
+      if (
+        responseData.stored_response &&
+        Object.keys(responseData.stored_response).length !== 0
+      ) {
+        const botMessage = {
+          text: responseData.reply,
+          storedResponse: responseData.stored_response,
+          // sourceDocs: responseData.source_docs,
+          type: "bot",
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          }),
+        };
+
+        setMessages((messages) => [...messages, botMessage]);
+      } else {
+        const botMessage = {
+          text: responseData.reply,
+          storedResponse: {},
+          // sourceDocs: responseData.source_docs,
+          type: "bot",
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          }),
+        };
+
+        setMessages((messages) => [...messages, botMessage]);
+        console.log("stored_response is empty!");
+      }
       setIsBotThinking(false);
-      setMessages((messages) => [...messages, botMessage]);
+      console.log("Dynamic message data:", messages);
     } catch (error) {
       setIsBotThinking(false);
       console.error("Error sending message:", error);
@@ -147,29 +171,26 @@ const ChatbotScreen = () => {
                     : styles.botMessage,
                 ]}
               >
-                {(() => {
-                  const imageUrl = extractImageUrl(message.text);
-                  if (imageUrl) {
-                    // If an image URL is found, render the image
-                    return (
-                      <>
-                        <Image
-                          source={{ uri: imageUrl }}
-                          style={{ width: 200, height: 200 }} // Adjust size as needed
-                          resizeMode="contain"
-                        />
-                        {/* Optionally, display the rest of the message text without the URL */}
-                        <Text>
-                          {message.text.replace(/\(https?:\/\/[^)]+\)/, "")}
-                        </Text>
-                      </>
-                    );
-                  } else {
-                    // If no URL is found, just render the text
-                    return <Text>{message.text}</Text>;
-                  }
-                })()}
-                {/* <Text>{message.text}</Text> */}
+                <Text>{message.text}</Text>
+                {/* <Text>Test static text</Text> */}
+                {message.storedResponse &&
+                Object.keys(message.storedResponse).length !== 0 ? (
+                  <>
+                    <Text style={{ fontWeight: "bold" }}>Address:</Text>
+                    <Text>{message.storedResponse.address}</Text>
+                    <Text style={{ fontWeight: "bold" }}>Business Hours:</Text>
+                    {message.storedResponse.business_hours.map((hour, i) => (
+                      <Text key={i}>{hour}</Text>
+                    ))}
+                    <Text style={{ fontWeight: "bold" }}>Business Status:</Text>
+                    <Text>{message.storedResponse.business_status}</Text>
+                    <Text style={{ fontWeight: "bold" }}>Address:</Text>
+                    <Text>{message.storedResponse.address}</Text>
+                    {/* Render other details similarly */}
+                  </>
+                ) : (
+                  message.type === "bot" && <Text> </Text>
+                )}
                 {/* {message.sourceDocs &&
                 message.sourceDocs.map((doc, docIndex) => (
                   <Text key={docIndex}>
@@ -249,7 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   botMessage: {
-    backgroundColor: "#5cafea", // Light grey for bot messages
+    backgroundColor: "#A2D7FD",
     padding: 10,
     borderRadius: 20, // Rounded corners for the bubble
     marginVertical: 4,
@@ -259,7 +280,7 @@ const styles = StyleSheet.create({
   },
 
   userMessage: {
-    backgroundColor: "#50c878", // Blue for user messages
+    backgroundColor: "#38ACFF", // Blue for user messages
     color: "white", // White text color
     padding: 10,
     borderRadius: 20, // Rounded corners for the bubble

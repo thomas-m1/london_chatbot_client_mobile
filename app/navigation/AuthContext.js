@@ -6,14 +6,24 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isHalfAuth, setIsHalfAuth] = useState(false);
 
   const signIn = () => setIsAuthenticated(true);
   const signOut = () => setIsAuthenticated(false);
-  const continueWithoutSigningIn = () => setIsAuthenticated(true); // Treat as authenticated for navigation purposes
+  const continueWithoutSigningIn = () => {
+    setIsAuthenticated(true);
+    setIsHalfAuth(true);
+  }; // Treat as authenticated for navigation purposes
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, signIn, signOut, continueWithoutSigningIn }}
+      value={{
+        isAuthenticated,
+        isHalfAuth,
+        signIn,
+        signOut,
+        continueWithoutSigningIn,
+      }}
     >
       {children}
     </AuthContext.Provider>

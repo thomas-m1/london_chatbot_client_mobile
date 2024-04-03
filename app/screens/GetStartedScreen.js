@@ -12,7 +12,7 @@ import { useAuth } from "../navigation/AuthContext";
 
 const GetStartedScreen = () => {
   const navigation = useNavigation();
-  const { signOut } = useAuth();
+  const { signOut, isHalfAuth } = useAuth();
 
   return (
     <ImageBackground
@@ -20,16 +20,25 @@ const GetStartedScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      {/* Back to Login Button */}
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => {
-          signOut();
-          // navigation.navigate("Login");
-        }}
-      >
-        <Text style={styles.backButtonText}>Login or Register</Text>
-      </TouchableOpacity>
+      {/* Login/Logout button renders based on user is signIn or bypassed it with continueWithoutSignIn */}
+      {isHalfAuth ? (
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            signOut(); // Assuming signOut is a method to log out the user
+            // Optionally navigate to a screen after logging out
+          }}
+        >
+          <Text style={styles.backButtonText}>Login/Register</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => signOut()} // Assuming "Login" is the route name for your login screen
+        >
+          <Text style={styles.backButtonText}>Logout</Text>
+        </TouchableOpacity>
+      )}
 
       <View style={styles.overlay}>
         <Image
